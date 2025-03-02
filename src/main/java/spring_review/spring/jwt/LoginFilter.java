@@ -50,6 +50,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String access = jwtUtil.createJwt("access", email, role, 600000L);
         String refresh = jwtUtil.createJwt("refresh", email, role, 86400000L);
 
+        log.info("email: {}", email);
+
         //refresh 엔티티 추가 함수
         addRefreshEntity(refresh, email);
 
