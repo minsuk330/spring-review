@@ -41,6 +41,9 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil,refreshRepository);
+        loginFilter.setFilterProcessesUrl("/api/auth/login");
+
         http
                .cors((cors)-> cors
                 .configurationSource(new CorsConfigurationSource() {
@@ -58,6 +61,7 @@ public class SecurityConfig {
                         return config;
                     }
                 }));
+
         http
                 .csrf((auth) -> auth.disable());
         //form로그인 방식 disable
@@ -70,7 +74,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("login", "/", "/api/auth/register","/reissue").permitAll()
+                        .requestMatchers("/api/auth/login", "/", "/api/auth/register","/reissue").permitAll()
                         .requestMatchers("/admin","/api/post/ans").hasRole("ADMIN") //이 admin의 역할을 가졌는지 필터함
                         .anyRequest().authenticated());
 
@@ -80,7 +84,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil,refreshRepository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();
