@@ -11,8 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import spring_review.spring.jwt.JwtUtil;
+import spring_review.spring.jwt.LoginFilter;
+import spring_review.spring.repository.RefreshRepository;
 
 import java.util.Collections;
 
@@ -22,6 +26,8 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
 
     //비밀번호를 암호화 시켜 검증해야 하기 때문에 이걸로 비밀번호 암호화 진행
     @Bean
@@ -72,6 +78,9 @@ public class SecurityConfig {
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil,refreshRepository), UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();
