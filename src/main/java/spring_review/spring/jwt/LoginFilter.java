@@ -57,7 +57,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         //헤더에 정보 추가
         response.setHeader("access", access);
-        response.addCookie(createCookie("refresh",refresh));
+        response.addCookie(createCookie(refresh));
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -70,8 +70,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
 
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
+    private Cookie createCookie(String value) {
+        Cookie cookie = new Cookie("refresh", value);
         cookie.setMaxAge(24*60*60);
         cookie.setHttpOnly(true);
 

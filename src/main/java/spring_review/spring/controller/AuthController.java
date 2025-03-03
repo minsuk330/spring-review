@@ -12,10 +12,15 @@ import spring_review.spring.service.AuthService;
 public class AuthController {
     private final AuthService authService;
 
+    /**
+     * todo : 중복 아이디 처리
+     */
     @PostMapping("/api/auth/register")
     public String registration(@ModelAttribute MemberRegistrationDto memberRegistrationDto) {
         authService.register(memberRegistrationDto);
         return "success";
     }
+
+
 
 }

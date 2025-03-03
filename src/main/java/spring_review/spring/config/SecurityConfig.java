@@ -12,8 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import spring_review.spring.jwt.CustomLogoutFilter;
+import spring_review.spring.jwt.JwtFilter;
 import spring_review.spring.jwt.JwtUtil;
 import spring_review.spring.jwt.LoginFilter;
 import spring_review.spring.repository.RefreshRepository;
@@ -85,6 +88,10 @@ public class SecurityConfig {
 
         http
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil,refreshRepository), LogoutFilter.class);
 
 
         return http.build();
