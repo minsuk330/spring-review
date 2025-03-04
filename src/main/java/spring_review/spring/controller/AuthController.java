@@ -13,9 +13,6 @@ import spring_review.spring.service.AuthService;
 public class AuthController {
     private final AuthService authService;
 
-    /**
-     * todo : 중복 아이디 처리
-     */
     @PostMapping("/api/auth/register")
     public ResponseEntity<String> registration(@ModelAttribute MemberRegistrationDto memberRegistrationDto) {
         try {
@@ -26,9 +23,5 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
-
     }
-
-
-
 }

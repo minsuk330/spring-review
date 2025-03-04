@@ -23,7 +23,7 @@ public class AuthService {
         String email = memberRegistrationDto.getEmail();
         String password = memberRegistrationDto.getPassword();
 
-        if(memberRepository.findByEmail(email)!=null) {
+        if(memberRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
         }
 
