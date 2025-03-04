@@ -2,6 +2,7 @@ package spring_review.spring.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,18 @@ public class AuthService {
         String email = memberRegistrationDto.getEmail();
         String password = memberRegistrationDto.getPassword();
 
+        if(memberRepository.findByEmail(email)!=null) {
+            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
+        }
+
         Member member = Member.create(email, bCryptPasswordEncoder.encode(password), RoleType.ROLE_USER);
 
-        memberRepository.save(member);
+        try {
+            memberRepository.save(member);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("이미 사용중인 이메일입니다.");
+        }
+
     }
 }

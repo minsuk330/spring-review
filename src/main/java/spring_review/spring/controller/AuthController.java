@@ -1,6 +1,7 @@
 package spring_review.spring.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,9 +17,16 @@ public class AuthController {
      * todo : 중복 아이디 처리
      */
     @PostMapping("/api/auth/register")
-    public String registration(@ModelAttribute MemberRegistrationDto memberRegistrationDto) {
-        authService.register(memberRegistrationDto);
-        return "success";
+    public ResponseEntity<String> registration(@ModelAttribute MemberRegistrationDto memberRegistrationDto) {
+        try {
+            authService.register(memberRegistrationDto);
+            return ResponseEntity.ok("회원가입이 완료되었습니다!");
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
     }
 
 
